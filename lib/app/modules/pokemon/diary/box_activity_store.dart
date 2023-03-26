@@ -7,13 +7,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../config/constant.dart';
 import '../../../config/responsive_app.dart';
-import '../supervisor_controller.dart';
+import '../pokemon_controller.dart';
 
 class BoxActivityStore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => Padding(
         padding: responsiveApp.edgeInsetsApp!.onlyMediumLeftRightEdgeInsets,
         child: Container(
@@ -124,13 +124,13 @@ class BoxActivityStore extends StatelessWidget {
     );
   }
 
-  Widget activityToEat(SupervisorController _) {
+  Widget activityToEat(PokemonController _) {
     return Row(
       children: [
         Expanded(
           flex: 2,
           child: Container(
-            child: SvgPicture.asset(Constant.ICON_CLOCK_GREEN),
+            child: SvgPicture.asset(Constant.ICON_POKE_BALL),
           ),
         ),
         Expanded(

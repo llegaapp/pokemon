@@ -8,7 +8,7 @@ class ThemeApp {
   Color colorPrimaryBlue = Color(0xff004c97);
   Color colorSecondaryBlue = Color(0xff009fdf);
   Color colorSecondaryBlueOpacy25 = Color(0xff009fdf).withOpacity(0.25);
-  Color colorPrimaryRed = Color(0xffde002b);
+
   Color colorGenericIcon = Color(0xffbcdcf2);
   Color colorButtonDisable = Color(0xffced2d8);
   Color colorShadowContainer = Color(0xffbcdcf2).withOpacity(0.5);
@@ -24,6 +24,7 @@ class ThemeApp {
   Color colorCompanion = Color(0xff7dc244);
 
   Color colorPrimary = Color(0xffd9d9d9);
+  Color colorPrimaryRed = Color(0xffde002b);
 
   late Color colorBackground;
   late Color colorBackgroundGray;
@@ -87,7 +88,7 @@ class ThemeApp {
   TextStyle? text14boldPimary;
   TextStyle? text14boldWhite;
   TextStyle? text14boldWhiteShadow;
-  TextStyle? text14boldBlack400;
+
   TextStyle? text14Companyon;
   TextStyle? text16;
   TextStyle? text16400Gray;
@@ -101,6 +102,7 @@ class ThemeApp {
   TextStyle? text18bold;
   TextStyle? text16boldBlack400;
   TextStyle? text18boldWhite;
+
   TextStyle? text18boldBlack600;
   TextStyle? text20;
   TextStyle? text20700Black;
@@ -113,6 +115,8 @@ class ThemeApp {
   TextStyle? text22primaryShadow;
 
   TextStyle? textHeader;
+  TextStyle? text14boldBlack400;
+  TextStyle? text12dWhite;
 
   init() {
     colorsGradient = [Colors.blue, white];
@@ -287,7 +291,7 @@ class ThemeApp {
         fontFamily: 'Poppins');
     text14boldBlack400 = TextStyle(
         color: colorBlack,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w700,
         fontSize: 14,
         fontFamily: 'TitilliumWeb Web');
     text16400Gray = TextStyle(
@@ -315,11 +319,7 @@ class ThemeApp {
         fontWeight: FontWeight.w400,
         fontSize: 16,
         fontFamily: 'TitilliumWeb Web');
-    text18boldWhite = TextStyle(
-        color: colorWhite,
-        fontWeight: FontWeight.w500,
-        fontSize: 18,
-        fontFamily: 'Titillium Web Black');
+
     text20700Black = TextStyle(
         color: colorBlack,
         fontWeight: FontWeight.w700,
@@ -339,6 +339,8 @@ class ThemeApp {
       fontSize: 16,
       fontWeight: FontWeight.w400,
     );
+    text12dWhite = TextStyle(
+        color: colorWhite, fontSize: 12, fontFamily: 'Titillium Web Black');
   }
 }
 

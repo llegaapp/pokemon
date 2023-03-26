@@ -1,4 +1,4 @@
-import 'package:pokemon_heb/app/modules/pokemon/supervisor_controller.dart';
+import 'package:pokemon_heb/app/modules/pokemon/pokemon_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'view_teams_info.dart';
@@ -7,7 +7,7 @@ class ShowListTeams extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
         builder: (_) => Scrollbar(
               thickness: 8,
               thumbVisibility: true,

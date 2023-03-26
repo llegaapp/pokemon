@@ -291,6 +291,15 @@ class MainRepository {
     return _api.getAppHomeListCurrentScheduleClientsBySupervisor(skip, limit);
   }
 
+  Future<Map<String, dynamic>> getAppHomePokemonList(
+      int skip, int limit) async {
+    return _api.getAppHomePokemonList(skip, limit);
+  }
+
+  Future<Map<String, dynamic>> getAppHomePokemonDetailList(String url) async {
+    return _api.getAppHomePokemonDetailList(url);
+  }
+
   Future<Map<String, dynamic>> getAppAllClientsListByRouteSupervisor(
       String idRoute) async {
     return _api.getAppAllClientsListByRouteSupervisor(idRoute);

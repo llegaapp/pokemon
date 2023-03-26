@@ -7,7 +7,7 @@ class Constant {
   static const double iconSize = 35.0;
   static const String PATH_IMG = 'assets/img/';
   static const String LOGO_GTP = PATH_IMG + 'logotipo_gtp.svg';
-  static const String LOGO_ALONE = PATH_IMG + 'logo_alone.svg';
+  static const String LOGO_ALONE = PATH_IMG + 'logo_splash_1152.png';
   static const String ICON_USER = PATH_IMG + 'user.svg';
   static const String ICON_SCHEDULE = PATH_IMG + 'schedule.svg';
   static const String ICON_LOCK = PATH_IMG + 'lock.svg';
@@ -57,6 +57,7 @@ class Constant {
   static const String ICON_GROUP_GROUPS219 = PATH_IMG + 'Group219.svg';
   static const String ICON_GROUP_GROUPS186 = PATH_IMG + 'Group186.svg';
   static const String ICON_CALENDAR_BLUE = PATH_IMG + 'calendar_blue.svg';
+  static const String ICON_POKE_BALL = PATH_IMG + 'poke_ball.png';
 
   static const String LOGO_DETALLISTA = PATH_IMG + 'detallista.png';
   static const String LOGO_CONSUMIDOR = PATH_IMG + 'consumidor.png';

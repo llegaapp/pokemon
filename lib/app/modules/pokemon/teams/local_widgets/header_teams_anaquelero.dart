@@ -4,13 +4,13 @@ import 'package:get/get.dart';
 import '../../../../../main.dart';
 import '../../../../config/constant.dart';
 import '../../../../config/responsive_app.dart';
-import '../../supervisor_controller.dart';
+import '../../pokemon_controller.dart';
 
 class HeaderTeamsAnaquelero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => Container(
         //height: responsiveApp.boxContainerHeight,
         decoration: BoxDecoration(

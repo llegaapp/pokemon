@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../global_widgets/app/card_store.dart';
-import '../../supervisor_controller.dart';
+import '../../pokemon_controller.dart';
 
 class ShowDetailTeamsAnaquelero extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => Scrollbar(
         thickness: 8,
         isAlwaysShown: true,

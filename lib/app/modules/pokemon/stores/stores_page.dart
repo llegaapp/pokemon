@@ -10,14 +10,14 @@ import 'package:flutter_bootstrap/flutter_bootstrap.dart';
 import 'package:pokemon_heb/app/global_widgets/input2.dart';
 import 'package:pokemon_heb/app/global_widgets/dropdown2.dart';
 
-import '../supervisor_controller.dart';
+import '../pokemon_controller.dart';
 
 class StoresPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
     bootstrapGridParameters(gutterSize: 10);
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => Container(
         child: _.loading
             ? CircularProgressIndicator()

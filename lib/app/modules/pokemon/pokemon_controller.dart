@@ -29,6 +29,7 @@ import '../../global_widgets/data_table/src/paginated_data_table_2.dart';
 import '../../global_widgets/dropdown2.dart';
 import '../../global_widgets/empty_table.dart';
 import '../../models/paginator.dart';
+import '../../models/pokemon.dart';
 import '../../models/response_code.dart';
 import '../../models/diary/route_sup.dart';
 import '../../models/stores/anaqueleros_to_manage_client.dart';
@@ -39,14 +40,19 @@ import '../../models/teams/team_list_by_supervisor.dart';
 import '../../repository/main_repository.dart';
 import 'diary/client_detail_page.dart';
 import 'diary/diary_anaqueleros_loadData.dart';
-import 'supervisor_binding.dart';
+import 'pokemon_binding.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:path/path.dart';
 
+import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
+
 import 'teams/teams_anaquelero_page.dart';
 
-class SupervisorController extends GetxController {
+class PokemonController extends GetxController {
   bool loading = false;
+  Dio dio = Dio();
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   RefreshController refreshControllerSupervisor =
       RefreshController(initialRefresh: false);
@@ -57,6 +63,7 @@ class SupervisorController extends GetxController {
   RefreshController refreshControllerAgendaDetail =
       RefreshController(initialRefresh: false);
   List<RouteSup> itemsRouteSup = [];
+  List<PokemonListModel> itemsPokemon = [];
 
   late List<CatRoutesBySupervisor> itemsRoutes = [];
   late List<AnaquelerosToManage> itemsAnaqueleros = [];
@@ -132,6 +139,7 @@ class SupervisorController extends GetxController {
   int teamRadioVal = -1;
 
   //paginator
+  List<PokemonListModel> itemsPokemonPaginator = [];
   List<RouteSup> itemsRouteSupPaginator = [];
   int totalItemsRouteSupPaginator = 0;
   final _paginationFilter = PaginationFilter().obs;
@@ -159,13 +167,12 @@ class SupervisorController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+
     await getCountClientsStates();
-    await loadStoresData();
-    await loadTeamsData();
 
     //paginator
-    await dropDetailStoreSupLocal();
-    ever(_paginationFilter, (_) => loadListRoute());
+
+    ever(_paginationFilter, (_) => loadListPokemon());
     _changePaginationFilter(0, _limitPagination);
     //paginator
   }
@@ -457,58 +464,35 @@ class SupervisorController extends GetxController {
   * ----------------------------------------------------------------------------------------------------------------------
   * Ing. Gerardo Aguilar        24/07/2022   [SUP] HU02      Implementación inicial
   ----------------------------------------------------------------------------------------------------------------------- */
-  loadListRoute() async {
+  loadListPokemon() async {
     if (loading) return;
     loading = true;
     Utils.syncDialog(obteniendoDatosStr);
     itemsRouteSupPaginator.clear();
     int skip = int.parse(_paginationFilter.value.skip.toString());
     int limit = int.parse(_paginationFilter.value.limit.toString());
-    if (await Utils.hasInternet()) {
-      result = await Get.find<MainRepository>()
-          .getAppHomeListCurrentScheduleClientsBySupervisor(0, 1);
-      if (result[Cnstds.dataRouteSup] != null)
-        totalItemsRouteSupPaginator =
-            int.parse(result[Cnstds.dataRouteSupTotal].toString());
+    result =
+        await Get.find<MainRepository>().getAppHomePokemonList(skip, limit);
 
-      result = await Get.find<MainRepository>()
-          .getAppHomeListCurrentScheduleClientsBySupervisor(skip, limit);
-      ResponseCode response = result[Cnstds.KEY_RESPONSE];
-      _code = response.code;
-      if (_code == Cnstds.KEY_GST00000) {
-        if (result[Cnstds.todayShow] != null) {
-          dateCurrentStr = result[Cnstds.todayShow] as String;
-          Utils.prefs.dateCurrentStr = dateCurrentStr;
+    if (result[Cnstds.dataPokemonList] != null) {
+      itemsPokemonPaginator =
+          result[Cnstds.dataPokemonList] as List<PokemonListModel>;
+      itemsPokemon.addAll(itemsPokemonPaginator);
+      for (var _item in itemsPokemon) {
+        var splitUtl;
+        splitUtl = _item.url?.split("/");
+        _item.id = splitUtl[6];
+        _item.img = Cnstds.IMG_URL_SOURCE + splitUtl[6] + '.png';
+        result = await Get.find<MainRepository>()
+            .getAppHomePokemonDetailList(_item.url.toString());
+        if (result[Cnstds.dataPokemonDetailList] != null) {
+          _item.detail = result[Cnstds.dataPokemonDetailList];
         }
-        if (result[Cnstds.dataRouteSup] != null) {
-          itemsRouteSupPaginator =
-              result[Cnstds.dataRouteSup] as List<RouteSup>;
-          itemsRouteSup.addAll(itemsRouteSupPaginator);
-          if (itemsRouteSup.length > 0) {
-            if (skip == 0) itemsRouteSup[0].selected = true;
-            // Obtener los detalles de tienda
-            await getDetailStoreSupLocal();
-            // Guardar con Getstorage permanente
-            List<Map<String, dynamic>>? routeSupMap =
-                itemsRouteSup.map((i) => i.toJson(i)).toList();
-
-            String jsonString = jsonEncode(routeSupMap);
-            Utils.prefs.routeSup = jsonString;
-            //
-          }
-        }
-      }
-    } else {
-      String valor = Utils.prefs.routeSup;
-      if (valor.isNotEmpty) {
-        dynamic jsonData = jsonDecode(valor);
-        itemsRouteSup =
-            (jsonData as List).map((i) => RouteSup.fromJson(i)).toList();
-        dateCurrentStr = Utils.prefs.dateCurrentStr;
       }
     }
+
     //pagination
-    if (itemsRouteSupPaginator.isEmpty) {
+    if (itemsPokemonPaginator.isEmpty) {
       _lastPage.value = true;
     }
     //pagination
@@ -518,7 +502,7 @@ class SupervisorController extends GetxController {
     Get.back();
     update();
     if (skip! > 0) {
-      scrollController.animateTo((itemsRouteSup.length - _limitPagination) * 45,
+      scrollController.animateTo((itemsPokemon.length - _limitPagination) * 45,
           duration: const Duration(microseconds: 100), curve: Curves.linear);
     }
     update();
@@ -674,7 +658,7 @@ class SupervisorController extends GetxController {
     if (itemClientDetailSup != null) {
       Get.to(
         () => ClientDetailPage(controller),
-        binding: SupervisorBinding(),
+        binding: PokemonBinding(),
       );
     } else {
       Utils.snackErrorMessagge('Warning', errorDetailStoreInfo);
@@ -1026,7 +1010,7 @@ class SupervisorController extends GetxController {
       await loadTeamsData();
       await checkPendingShippingAgenda();
       await dropDetailStoreSupLocal();
-      await loadListRoute();
+      await loadListPokemon();
       Utils.withoutSending = false;
       Utils.withoutSendingStores = false;
       Utils.withoutSendingTeams = false;
@@ -2780,6 +2764,47 @@ class SupervisorController extends GetxController {
     );
   }
 
+  openPokemonList(BuildContext _) {
+    Get.dialog(
+      Container(
+          height: 400,
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(10.0),
+            content: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Get.back();
+                    },
+                    child: Container(
+                      child:
+                          itemPopUp(Constant.ICON_TRASH_BLUE, restablecerStr),
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Divider(
+                    color: themeApp.colorGenericBox,
+                  ),
+                  SizedBox(height: 2),
+                  GestureDetector(
+                    onTap: () {
+                      Get.back();
+                      Get.back();
+                      agendaOpenBottomSheetTableStore(_);
+                    },
+                    child: Container(
+                      child: itemPopUp(Constant.ICON_EDIT, editarStr),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )),
+    );
+  }
+
   /* ------------------------------------------------------------------------------------------------------------------------
   Nombre:      setCheckAttendance
   Propósito:   Procedimiento que abre la ventana de dialogo para dar asistencia de inicio o termino de tareas
@@ -4209,7 +4234,7 @@ class SupervisorController extends GetxController {
       update();
       Get.to(
         () => TeamsAnaqueleroPage(),
-        binding: SupervisorBinding(),
+        binding: PokemonBinding(),
       );
     }
   }
@@ -4310,7 +4335,7 @@ class Activity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => Container(
         padding: responsiveApp.edgeInsetsApp!.onlySmallLeftRightEdgeInsets,
         child: _.loading

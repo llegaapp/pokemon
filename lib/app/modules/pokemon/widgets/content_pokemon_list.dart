@@ -1,17 +1,15 @@
 import 'package:pokemon_heb/app/global_widgets/item_pokemon.dart';
-import 'package:pokemon_heb/app/models/stores/clients_list_by_route_supervisor.dart';
 import 'package:pokemon_heb/app/modules/pokemon/pokemon_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../config/string_app.dart';
-import '../../../../models/diary/route_sup.dart';
+import '../../../models/pokemon.dart';
 
-class ViewStoresInfo extends StatelessWidget {
-  final ClientsListByRouteSupervisor item;
+class ContentPokemonList extends StatelessWidget {
+  final PokemonListModel item;
   final int index;
   final String currentStoreList;
-  const ViewStoresInfo(this.item, this.index, this.currentStoreList);
+  const ContentPokemonList(this.item, this.index, this.currentStoreList);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +18,10 @@ class ViewStoresInfo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 ItemPokemon(
-                  index: index,
-                  img: item.idRoute,
-                  name: item.nameClient,
-                ),
+                    index: index,
+                    img: item.img,
+                    name: item.name,
+                    pokemonTypes: item.detail?.pokemonTypes),
                 SizedBox(
                   height: 10,
                 )

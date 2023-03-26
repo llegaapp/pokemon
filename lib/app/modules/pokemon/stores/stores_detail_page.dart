@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../../../main.dart';
 import '../../../config/string_app.dart';
 import '../../../global_widgets/pull_to_refresh.dart';
-import '../supervisor_controller.dart';
+import '../pokemon_controller.dart';
 import 'package:pokemon_heb/app/models/stores/clients_list_by_route_supervisor.dart';
 
 class StoreDetailPage extends StatelessWidget {
@@ -19,7 +19,7 @@ class StoreDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(

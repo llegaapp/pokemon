@@ -1,15 +1,18 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:pokemon_heb/app/config/utils.dart';
 import 'package:pokemon_heb/app/models/diary/client_detail_sup.dart';
 import 'package:pokemon_heb/app/models/anaquelero/home_info.dart';
 import 'package:pokemon_heb/app/models/diary/route_sup.dart';
 import 'package:pokemon_heb/app/models/profile.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart' as Gq;
 import '../models/anaquelero/client.dart';
 import '../models/diary/client_detail_other_route.dart';
 import '../models/anaquelero/event.dart';
 import '../models/anaquelero/event_client.dart';
+import '../models/pokemon.dart';
 import '../models/response_code.dart';
 import '../models/stores/anaqueleros_to_manage_client.dart';
 import '../models/stores/cat_routes_by_supervisor.dart';
@@ -19,18 +22,27 @@ import '../models/validation.dart';
 import '../models/stores/clients_list_by_route_supervisor.dart';
 import 'api_endpoints.dart';
 import 'constant_ds.dart';
-import 'graphql_config.dart';
+import 'api_config.dart';
 
 class ApiClients {
   Map<String, dynamic> datos = Map<String, dynamic>();
-  late ResponseCode response;
+  late ResponseCode _response;
+  late Response response;
+
+  Dio dio = Dio();
+  var apidata;
+  bool error = false;
+  bool loading = false;
+  bool cache = false;
+  String errmsg = "";
+
   get developer => null;
 
   void setResponse(Map<String, dynamic>? data, String endPoint) {
     datos.clear();
-    response = ResponseCode.fromJson(data![endPoint][Cnstds.KEY_RESPONSCODE]);
-    datos.addAll({'response': response});
-    if (response.code == Cnstds.KEY_GST00001) {
+    _response = ResponseCode.fromJson(data![endPoint][Cnstds.KEY_RESPONSCODE]);
+    datos.addAll({'response': _response});
+    if (_response.code == Cnstds.KEY_GST00001) {
       Validation validation = Validation.fromJson(
           data[endPoint][Cnstds.KEY_RESPONSCODE][Cnstds.KEY_VALIDATIONS][0]);
       datos.addAll({'validation': validation});
@@ -42,12 +54,13 @@ class ApiClients {
     const _endPoint = 'auth_login';
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client =
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client =
           graphQLConfiguration.getGraphQLClient(apiUrl: Cnstds.KEY_AUTH_URL);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(ApiEndpoints.qmLogin(employeeId, password, deviceId)),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document:
+              Gq.gql(ApiEndpoints.qmLogin(employeeId, password, deviceId)),
         ),
       );
 
@@ -72,12 +85,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(ApiEndpoints.qmHomeInfo()),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(ApiEndpoints.qmHomeInfo()),
         ),
       );
 
@@ -109,12 +122,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(ApiEndpoints.qmClientById(idClientRoute)),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(ApiEndpoints.qmClientById(idClientRoute)),
         ),
       );
 
@@ -155,12 +168,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(ApiEndpoints.qmAppCheckin(idClientRoute, lat, long,
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(ApiEndpoints.qmAppCheckin(idClientRoute, lat, long,
               deviceDate, deviceGTM, isOnline, b64Photo)), // this
         ),
       );
@@ -182,12 +195,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(ApiEndpoints.qmAppCheckout(idClientRoute, lat, long,
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(ApiEndpoints.qmAppCheckout(idClientRoute, lat, long,
               comment, deviceDate, deviceGTM, isOnline, b64Photo)), // this
         ),
       );
@@ -208,15 +221,15 @@ class ApiClients {
     const _endPoint = 'app_manage_client_out_frequency_by_supervisor';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query = ApiEndpoints.appManageClientOutFrequencyBySupervisor(
           idClient, idCellar, idAnaquelero, startTime, endTime);
       log(query);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(query), // this
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(query), // this
         ),
       );
       if (result.hasException) {
@@ -236,12 +249,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(ApiEndpoints.qmEventList()),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(ApiEndpoints.qmEventList()),
         ),
       );
 
@@ -273,12 +286,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(ApiEndpoints.qmAppStartEvent(idClientRoute,
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(ApiEndpoints.qmAppStartEvent(idClientRoute,
               idCatalogEvent, lat, long, deviceDate, deviceGTM)), // this
         ),
       );
@@ -305,12 +318,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(ApiEndpoints.qmAppEndEvent(
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(ApiEndpoints.qmAppEndEvent(
               idRegisteredEvent, deviceDate, deviceGTM)), // this
         ),
       );
@@ -331,12 +344,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_AUTH_URL, accessToken: token);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(ApiEndpoints.qmLogout()), // this
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(ApiEndpoints.qmLogout()), // this
         ),
       );
       if (result.hasException) {
@@ -355,13 +368,13 @@ class ApiClients {
     const _endPoint = 'app_closing_day_by_supervisor';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query = ApiEndpoints.appClosingDayBySupervisor();
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(query), // this
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(query), // this
         ),
       );
       if (result.hasException) {
@@ -383,14 +396,14 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query =
           ApiEndpoints.qmGetAppHomeListCurrentScheduleClientsBySupervisor(
               skip, limit);
-      QueryResult result = await _client.query(
-        QueryOptions(document: gql(query)),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(document: Gq.gql(query)),
       );
       if (result.hasException) {
         datos.clear();
@@ -417,16 +430,96 @@ class ApiClients {
     }
   }
 
+  Future<Map<String, dynamic>> getAppHomePokemonList(
+      int skip, int limit) async {
+    const _endPoint = 'results';
+    String _url = Cnstds.API_URL + "?limit=$limit&offset=$skip";
+    if (cache)
+      dio.interceptors.add(
+          DioCacheManager(CacheConfig(baseUrl: Cnstds.API_URL)).interceptor);
+    try {
+      Response response;
+      if (cache) {
+        response = await dio.get(_url,
+            options: buildCacheOptions(
+              Duration(days: 7),
+              forceRefresh: true,
+              maxStale: Duration(days: 1),
+            ));
+      } else {
+        response = await dio.get(
+          _url,
+        );
+      }
+      apidata = response.data;
+      if (response.statusCode == 200) {
+        if (response.data![_endPoint] != null) {
+          List<PokemonListModel> itemsList = (response.data![_endPoint] as List)
+              .map((i) => PokemonListModel.fromJson(i))
+              .toList();
+          datos.addAll({Cnstds.dataPokemonList: itemsList});
+        }
+      } else {
+        error = true;
+        errmsg = "Error while fetching data.";
+        datos.clear();
+      }
+      return datos;
+    } catch (e) {
+      datos.clear();
+      return datos;
+    }
+  }
+
+  Future<Map<String, dynamic>> getAppHomePokemonDetailList(String url) async {
+    const _endPoint = 'types';
+    String _url = url;
+    if (cache)
+      dio.interceptors.add(
+          DioCacheManager(CacheConfig(baseUrl: Cnstds.API_URL)).interceptor);
+    try {
+      Response response;
+      if (cache) {
+        response = await dio.get(_url,
+            options: buildCacheOptions(
+              Duration(days: 7),
+              forceRefresh: true,
+              maxStale: Duration(days: 1),
+            ));
+      } else {
+        response = await dio.get(
+          _url,
+        );
+      }
+      apidata = response.data;
+      if (response.statusCode == 200) {
+        if (response.data! != null) {
+          PokemonModelDetail itemsList = PokemonModelDetail.fromJson(
+              response.data!);
+          datos.addAll({Cnstds.dataPokemonDetailList: itemsList});
+        }
+      } else {
+        error = true;
+        errmsg = "Error while fetching data.";
+        datos.clear();
+      }
+      return datos;
+    } catch (e) {
+      datos.clear();
+      return datos;
+    }
+  }
+
   Future<Map<String, dynamic>> getAppCatRouteBySupervisor() async {
     const _endPoint = 'get_app_cat_routes_by_supervisor';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(ApiEndpoints.getAppCatRouteBySupervisor()),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(ApiEndpoints.getAppCatRouteBySupervisor()),
         ),
       );
 
@@ -454,14 +547,14 @@ class ApiClients {
     const _endPoint = 'get_app_all_clients_list_by_route_supervisor';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query =
           ApiEndpoints.getAppAllClientsListByRouteSupervisor(idRoute);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {
@@ -488,14 +581,14 @@ class ApiClients {
     const _endPoint = 'get_app_all_clients_list_by_route_supervisor_today';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query =
           ApiEndpoints.getAppAllClientsListByRouteSupervisorToday(idRoute);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {
@@ -522,13 +615,13 @@ class ApiClients {
     const _endPoint = 'get_app_cat_routes_by_supervisor';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query = ApiEndpoints.getAppCatRoutesBySupervisor(isToday);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {
@@ -554,13 +647,13 @@ class ApiClients {
     const _endPoint = 'app_get_team_list_by_supervisor';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query = ApiEndpoints.appGetTeamListBySupervisor(isToday);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {
@@ -588,14 +681,14 @@ class ApiClients {
     if (idClientRoute == '') idClientRoute = '0';
     if (idClientRoute == null) idClientRoute = '0';
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query = ApiEndpoints.qmClientDetailsBySupervisor(
           idRoute, idClient, idCellar, idClientRoute);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {
@@ -621,12 +714,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(ApiEndpoints.qmClientDetailsOtherRoutesBySupervisor(
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(ApiEndpoints.qmClientDetailsOtherRoutesBySupervisor(
               idRoute, idClient, idCellar)),
         ),
       );
@@ -657,13 +750,13 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document:
-              gql(ApiEndpoints.qmGetAnaquelerosToManageClient(id_client_route)),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(
+              ApiEndpoints.qmGetAnaquelerosToManageClient(id_client_route)),
         ),
       );
 
@@ -696,13 +789,17 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(ApiEndpoints.qmMarkAssistanceBySupervisor(idClientRoute,
-              idAnaquelero, checkinTime, checkoutTime, deviceGTM)),
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(ApiEndpoints.qmMarkAssistanceBySupervisor(
+              idClientRoute,
+              idAnaquelero,
+              checkinTime,
+              checkoutTime,
+              deviceGTM)),
         ),
       );
 
@@ -724,12 +821,12 @@ class ApiClients {
     String token = Utils.prefs.token;
     try {
       // initializing GraphQLConfig
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(ApiEndpoints.qmReassignReplacementAnaquelero(
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(ApiEndpoints.qmReassignReplacementAnaquelero(
               idClientRoute, idAnaquelero, startTime, endTime)),
         ),
       );
@@ -750,13 +847,13 @@ class ApiClients {
     const _endPoint = 'app_get_profile_info_user';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query = ApiEndpoints.qmGetProfileInfoUser();
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {
@@ -781,13 +878,13 @@ class ApiClients {
     const _endPoint = 'app_get_count_clients_states_today_by_supervisor';
     String token = Utils.prefs.token;
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client = graphQLConfiguration.getGraphQLClient(
           apiUrl: Cnstds.KEY_API_URL, accessToken: token);
       String query = ApiEndpoints.appGetCountClientsStatesTodaySySupervisor();
-      QueryResult result = await _client.query(
-        QueryOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.query(
+        Gq.QueryOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {
@@ -811,14 +908,14 @@ class ApiClients {
       String name, email, bornDate, password) async {
     const _endPoint = 'app_register_user_dummy';
     try {
-      GraphQLConfig graphQLConfiguration = GraphQLConfig();
-      GraphQLClient _client =
+      ApiConfig graphQLConfiguration = ApiConfig();
+      Gq.GraphQLClient _client =
           graphQLConfiguration.getGraphQLClient(apiUrl: Cnstds.KEY_AUTH_URL);
       String query =
           ApiEndpoints.appRegisterUserDummy(name, email, bornDate, password);
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(query),
+      Gq.QueryResult result = await _client.mutate(
+        Gq.MutationOptions(
+          document: Gq.gql(query),
         ),
       );
       if (result.hasException) {

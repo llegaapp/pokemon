@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../global_widgets/pull_to_refresh.dart';
-import '../supervisor_controller.dart';
+import '../pokemon_controller.dart';
 import '../widgets/custom_appbar.dart';
 import 'content_client_detail.dart';
 
@@ -11,7 +11,7 @@ class ClientDetailPage extends StatelessWidget {
   const ClientDetailPage(this.refreshController);
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(

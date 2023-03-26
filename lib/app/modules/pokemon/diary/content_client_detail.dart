@@ -10,14 +10,14 @@ import '../../../config/string_app.dart';
 import '../../../global_widgets/app/status_store.dart';
 import '../../../global_widgets/app/view_address_store.dart';
 import '../../../global_widgets/header_store.dart';
-import '../supervisor_controller.dart';
+import '../pokemon_controller.dart';
 import 'box_activity_store.dart';
 
 class ContentClientDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => _.loading
           ? LoadingInfo()
           : ListView(children: [

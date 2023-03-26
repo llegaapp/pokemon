@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import '../modules/dashboard/dashboard_binding.dart';
 import '../modules/dashboard/dashboard_page.dart';
-import '../modules/pokemon/supervisor_binding.dart';
-import '../modules/pokemon/supervisor_page.dart';
+import '../modules/pokemon/pokemon_binding.dart';
+import '../modules/pokemon/pokemon_page.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -15,8 +15,8 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.SUPERVISOR,
-      page: () => SupervisorPage(),
-      binding: SupervisorBinding(),
+      page: () => PokemonPage(),
+      binding: PokemonBinding(),
     ),
   ];
 }

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-import '../supervisor_controller.dart';
+import '../pokemon_controller.dart';
 
 class ViewRouteInfo extends StatelessWidget {
   final RouteSup item;
@@ -18,7 +18,7 @@ class ViewRouteInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
         builder: (_) => Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -69,7 +69,7 @@ class ViewRouteInfo extends StatelessWidget {
             ));
   }
 
-  Widget cardRoute(SupervisorController _, ResponsiveApp responsive) {
+  Widget cardRoute(PokemonController _, ResponsiveApp responsive) {
     return Padding(
       padding: const EdgeInsets.only(
         left: 20.0,

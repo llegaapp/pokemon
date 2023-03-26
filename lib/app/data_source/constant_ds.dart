@@ -1,4 +1,8 @@
 class Cnstds {
+  static const String API_URL =
+      'https://pokeapi.co/api/v2/pokemon';
+  static const String IMG_URL_SOURCE =
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/';
   static const String DEV_HOST_API_URL =
       'https://k8s-env-dev.southcentralus.cloudapp.azure.com/gepp/gestion/dev/api/graphql';
   static const String STG_HOST_API_URL =
@@ -85,4 +89,6 @@ class Cnstds {
   static const String dataTeamListBySupervisor = 'dataTeamListBySupervisor';
   static const String dataProfileUser = 'dataProfileUser';
   static const String dataCountClientsStates = 'dataCountClientsStates';
+  static const String dataPokemonList = 'dataPokemonList';
+  static const String dataPokemonDetailList = 'dataPokemonDetailList';
 }

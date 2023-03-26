@@ -2,7 +2,7 @@ import 'package:pokemon_heb/app/config/constant.dart';
 import 'package:pokemon_heb/app/config/string_app.dart';
 import 'package:pokemon_heb/app/config/utils.dart';
 import 'package:pokemon_heb/app/modules/dashboard/dashboard_controller.dart';
-import 'package:pokemon_heb/app/modules/pokemon/supervisor_controller.dart';
+import 'package:pokemon_heb/app/modules/pokemon/pokemon_controller.dart';
 import 'package:pokemon_heb/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -60,7 +60,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                   onSelected: (value) {
-                    (controller as SupervisorController)
+                    (controller as PokemonController)
                         .setFilterStatus(value.toString());
                   },
                   itemBuilder: (context) {

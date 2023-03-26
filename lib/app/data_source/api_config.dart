@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'constant_ds.dart';
 
-class GraphQLConfig {
+class ApiConfig {
 
-  static HttpLink httpLink = HttpLink(Cnstds.KEY_API_URL);
+  static HttpLink httpLink = HttpLink(Cnstds.API_URL);
 
   static  ValueNotifier<GraphQLClient> graphInit() {
     final Link link = httpLink;

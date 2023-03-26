@@ -1,6 +1,6 @@
 import 'package:pokemon_heb/app/global_widgets/item_team.dart';
 import 'package:pokemon_heb/app/models/teams/team_list_by_supervisor.dart';
-import 'package:pokemon_heb/app/modules/pokemon/supervisor_controller.dart';
+import 'package:pokemon_heb/app/modules/pokemon/pokemon_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +14,7 @@ class ViewTeamsInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
         builder: (_) => Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

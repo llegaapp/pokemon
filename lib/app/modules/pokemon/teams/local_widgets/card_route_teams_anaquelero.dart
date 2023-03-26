@@ -4,14 +4,14 @@ import 'package:get/get.dart';
 import '../../../../config/constant.dart';
 import '../../../../config/responsive_app.dart';
 import '../../../../config/string_app.dart';
-import '../../supervisor_controller.dart';
+import '../../pokemon_controller.dart';
 import 'package:pokemon_heb/main.dart';
 
 class CardRouteTeamsAnaquelero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
-    return GetBuilder<SupervisorController>(
+    return GetBuilder<PokemonController>(
       builder: (_) => Padding(
         padding: responsiveApp.edgeInsetsApp!.onlyMediumLeftRightEdgeInsets,
         child: Container(
