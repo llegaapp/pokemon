@@ -1,4 +1,3 @@
-
 import 'package:pokemon_heb/app/config/constant.dart';
 import 'package:pokemon_heb/main.dart';
 import 'package:flutter/material.dart';
@@ -8,60 +7,6 @@ import 'string_app.dart';
 
 class Utils {
   static var prefs = Get.put(PreferedController());
-
-  static void syncDialog(String subtitle) {
-    Get.dialog(
-        barrierDismissible: false,
-        Container(
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            contentPadding:
-                EdgeInsets.only(top: 10, bottom: 10, left: 0, right: 0),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10.0, right: 10.0, bottom: 10, top: 10),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Flexible(
-                          flex: 40, // 15%
-                          child: Image.asset(
-                            Constant.ICON_POKE_BALL,
-                            width: 50,
-                          ),
-                        ),
-                        Flexible(
-                          flex: 60, // 15%
-                          child: Column(
-                            children: [
-                              Text(
-                                sincronizandoStr,
-                                style: themeApp.text20boldBlack,
-                                textAlign: TextAlign.right,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                subtitle,
-                                style: themeApp.text16400Gray,
-                                textAlign: TextAlign.right,
-                                overflow: TextOverflow.ellipsis,
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ));
-  }
 
   static Color pokemonColor(String _type) {
     String color = '0xff000000';

@@ -11,7 +11,7 @@ class ApiClients {
   var apidata;
   bool error = false;
   bool loading = false;
-  bool cache = false;
+  bool cache = true;
   String errmsg = "";
 
   get developer => null;
@@ -28,7 +28,7 @@ class ApiClients {
       if (cache) {
         response = await dio.get(_url,
             options: buildCacheOptions(
-              Duration(days: 7),
+              Duration(days: 1),
               forceRefresh: true,
               maxStale: Duration(days: 1),
             ));
