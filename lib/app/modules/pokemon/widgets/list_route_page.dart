@@ -6,10 +6,10 @@ import '../../../config/constant.dart';
 import '../../../config/string_app.dart';
 import '../../../global_widgets/loading_info.dart';
 import '../pokemon_controller.dart';
-import '../widgets/content_pokemon_list.dart';
+import 'content_pokemon_list.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
-class ListRoutePage extends StatelessWidget {
+class ListPokemonPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bootstrapGridParameters(gutterSize: 10);

@@ -3,11 +3,8 @@ import 'package:pokemon_heb/app/config/constant.dart';
 import 'package:pokemon_heb/app/modules/dashboard/dashboard_controller.dart';
 import 'package:pokemon_heb/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../config/string_app.dart';
-import '../../../config/utils.dart';
-import '../../../global_widgets/tooltipShape.dart';
 import '../pokemon_controller.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
