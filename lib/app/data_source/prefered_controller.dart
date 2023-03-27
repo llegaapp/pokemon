@@ -1,6 +1,8 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 
+import '../models/pokemon.dart';
+
 class PreferedController extends GetxController {
   final prefs = GetStorage();
 
@@ -131,4 +133,12 @@ class PreferedController extends GetxController {
   String get count_states_pending => prefs.read('count_states_pending') ?? '';
   set count_states_pending(String val) =>
       prefs.write('count_states_pending', val);
+
+  List<PokemonListModel> get itemsPokemonSelected =>
+      prefs.read('itemsPokemonSelected') ?? [];
+  set itemsPokemonSelected(List<PokemonListModel> val) =>
+      prefs.write('itemsPokemonSelected', val);
+
+
+
 }

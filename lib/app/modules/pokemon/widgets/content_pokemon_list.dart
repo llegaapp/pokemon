@@ -3,13 +3,13 @@ import 'package:pokemon_heb/app/modules/pokemon/pokemon_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../config/string_app.dart';
 import '../../../models/pokemon.dart';
 
 class ContentPokemonList extends StatelessWidget {
   final PokemonListModel item;
   final int index;
-  final String currentStoreList;
-  const ContentPokemonList(this.item, this.index, this.currentStoreList);
+  const ContentPokemonList(this.item, this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,12 @@ class ContentPokemonList extends StatelessWidget {
                     index: index,
                     img: item.img,
                     name: item.name,
-                    onPressed: item.selected == false ? _.addPokemon(item) : null,
+                    message: _.itemsPokemonSelected.length! == 5
+                        ? equipoCompletoStr
+                        : yaEsParteDeTuEquipoStr,
+                    onPressed: () {
+                      item.selected == false ? _.addPokemon(item) : null;
+                    },
                     selected: item.selected,
                     pokemonTypes: item.detail?.pokemonTypes),
                 SizedBox(

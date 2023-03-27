@@ -54,7 +54,7 @@ class ListRoutePage extends StatelessWidget {
                               itemCount: _.itemsPokemon.length,
                               itemBuilder: (context, index) {
                                 return ContentPokemonList(_.itemsPokemon[index],
-                                    index, _.currentStoreList);
+                                    index );
                                 // return Container();
                               },
                             ),

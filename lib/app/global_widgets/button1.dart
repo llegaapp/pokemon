@@ -9,6 +9,7 @@ class Button1 extends StatelessWidget {
   final Color? iconColor;
   final Color? background;
   final TextStyle? style;
+  final double? height;
 
   Button1(
       {this.label,
@@ -18,6 +19,7 @@ class Button1 extends StatelessWidget {
       this.tip,
       this.padding,
       this.background,
+      this.height,
       this.style});
 
   @override
@@ -44,24 +46,23 @@ class Button1 extends StatelessWidget {
       }
     } else {
       result = ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color?>(this.background),
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry?>(this.padding),
-          fixedSize: MaterialStateProperty.all<Size>(const Size(240, 50)),
-          shape:
-              MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          )),
+        style: ElevatedButton.styleFrom(
+          primary: this.background,
+          minimumSize: Size.fromHeight(this.height ?? 50), // NEW
         ),
+        onPressed: onPressed,
         child: Text(
           this.label ?? '',
           style: this.style,
         ),
-        onPressed: onPressed,
       );
     }
     if (this.padding != null) {
-      result = Container(padding: this.padding, child: result);
+      result = Container(
+        padding: this.padding,
+        child: result,
+        constraints: BoxConstraints.expand(),
+      );
     }
 
     if (tip != null) {

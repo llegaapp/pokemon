@@ -21,6 +21,20 @@ class PokemonListModel {
       url: json['url'] == null ? '' : json['url'],
     );
   }
+  Map<String, dynamic> toJson(PokemonListModel item) {
+    // List<Map<String, dynamic>>? _detail = item.detail != null
+    //     ? item.detail!.map((i) => i.toJson(i)).toList()
+    //     : null;
+
+    return <String, dynamic>{
+      'id': item.id,
+      'img': item.img,
+      'name': item.name,
+      'url': item.url,
+      'detail': item.detail,
+    };
+  }
+
   factory PokemonListModel.Copy(PokemonListModel o) {
     return PokemonListModel(
       id: o.id,

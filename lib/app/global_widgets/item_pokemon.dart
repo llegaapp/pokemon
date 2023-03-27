@@ -15,6 +15,7 @@ class ItemPokemon extends StatefulWidget {
   final int? index;
   final String? img;
   final String? name;
+  final String? message;
   final VoidCallback? onPressed;
   final bool? selected;
   final List<PokemonTypesList>? pokemonTypes;
@@ -24,6 +25,7 @@ class ItemPokemon extends StatefulWidget {
     this.img,
     this.name,
     this.onPressed,
+    this.message,
     this.selected,
     this.pokemonTypes,
   });
@@ -72,7 +74,7 @@ class _ItemPokemonState extends State<ItemPokemon> {
                           color: themeApp.colorWhite,
                           height: 100,
                           width: 100,
-                          child: Image.network(widget. img.toString()),
+                          child: Image.network(widget.img.toString()),
                         ),
                         SizedBox(
                           height: 10,
@@ -140,11 +142,11 @@ class _ItemPokemonState extends State<ItemPokemon> {
                           label: agregarAmiEquipoStr,
                           style: themeApp.text12dWhite,
                           background: themeApp.colorPrimaryRed,
-                          onPressed: (() => widget.onPressed),
+                          onPressed: widget.onPressed,
                         )
                       : Text(
-                          yaEsParteDeTuEquipoStr,
-                          style: themeApp.text12Red,
+                          widget.message.toString(),
+                          style: themeApp.text12RedBold,
                         ),
                 )),
             SizedBox(

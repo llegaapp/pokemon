@@ -25,6 +25,7 @@ class ThemeApp {
 
   Color colorPrimary = Color(0xffd9d9d9);
   Color colorPrimaryRed = Color(0xffde002b);
+  Color colorPrimaryGeen = Color(0xff40a6ac);
 
   late Color colorBackground;
   late Color colorBackgroundGray;
@@ -119,6 +120,7 @@ class ThemeApp {
   TextStyle? text12dWhite;
   TextStyle? text14Black;
   TextStyle? text12Red;
+  TextStyle? text12RedBold;
 
   init() {
     colorsGradient = [Colors.blue, white];
@@ -345,6 +347,8 @@ class ThemeApp {
         color: colorWhite, fontSize: 12, fontFamily: 'Titillium Web Black');
     text12Red = TextStyle(
         color: colorPrimaryRed, fontSize: 12, fontFamily: 'Titillium Web Black');
+    text12RedBold = TextStyle(
+        color: colorPrimaryRed, fontSize: 12, fontFamily: 'Titillium Web Black', fontWeight: FontWeight.w800,);
     text14Black = TextStyle(
         color: colorBlack, fontSize: 14, fontFamily: 'Titillium Web Black');
   }

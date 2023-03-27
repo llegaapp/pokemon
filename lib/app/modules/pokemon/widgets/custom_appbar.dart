@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:pokemon_heb/app/config/constant.dart';
 import 'package:pokemon_heb/app/modules/dashboard/dashboard_controller.dart';
 import 'package:pokemon_heb/main.dart';
@@ -26,11 +27,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           style: themeApp.textHeader,
         ),
         actions: [
-          IconButton(
-            icon: Image.asset(Constant.ICON_POKE_BALL),
-            onPressed: () {
-              _.openPokemonList(context);
-            },
+          Badge(
+            badgeColor: themeApp.colorWhite,
+            child: IconButton(
+              icon: Image.asset(Constant.ICON_POKE_BALL),
+              onPressed: () {
+                _.openPokemonList(context);
+              },
+            ),
+            position: BadgePosition.bottomStart(bottom: 3, start: 1),
+            badgeContent: Text(
+              _.itemsPokemonSelected.length.toString(),
+              style: themeApp.text12Red,
+            ),
           ),
         ],
       ),

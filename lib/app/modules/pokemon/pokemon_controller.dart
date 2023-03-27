@@ -176,9 +176,29 @@ class PokemonController extends GetxController {
   }
 
   addPokemon(PokemonListModel item) {
-    // itemsPokemonSelected!.add(item);
-    item.selected = true;
-    print(item.id.toString() + ' ' + item.selected.toString());
+    if (itemsPokemonSelected.length < 5) {
+      itemsPokemonSelected!.add(item);
+      item.selected = true;
+      // Utils.prefs.itemsPokemonSelected = [];
+      Utils.prefs.itemsPokemonSelected.addAll(itemsPokemonSelected);
+      log(itemsPokemonSelected.toString());
+    }
+
+    update();
+  }
+
+  removePokemon(PokemonListModel item) {
+    for (var _item in itemsPokemon) {
+      if (item.id == _item.id) {
+        _item.selected = false;
+        break;
+      }
+    }
+    itemsPokemonSelected!.remove(item);
+    // Utils.prefs.itemsPokemonSelected = [];
+    Utils.prefs.itemsPokemonSelected.addAll(itemsPokemonSelected);
+    log(itemsPokemonSelected.toString());
+    update();
   }
 
   loadTeamsData() async {
@@ -2770,42 +2790,87 @@ class PokemonController extends GetxController {
 
   openPokemonList(BuildContext _) {
     Get.dialog(
+      barrierDismissible: false,
       Container(
-          height: 400,
           child: AlertDialog(
-            contentPadding: EdgeInsets.all(10.0),
-            content: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Get.back();
-                    },
-                    child: Container(
-                      child:
-                          itemPopUp(Constant.ICON_TRASH_BLUE, restablecerStr),
+        contentPadding: EdgeInsets.all(10.0),
+        content: Container(
+          height: 450,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: 10.0, right: 10.0, bottom: 10, top: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                for (var _item in itemsPokemonSelected)
+                  Container(
+                    color: themeApp.colorPrimary,
+                    height: 70,
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            flex: 40, // 15%
+                            child: Container(
+                              color: themeApp.colorWhite,
+                              width: 40,
+                              child: Image.network(_item.img.toString()),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 150, // 15%
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    _item.name.toString(),
+                                    style: themeApp.text14boldBlack400,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Flexible(
+                                      child: Button1(
+                                    height: 10,
+                                    label: eliminarDeMiEquipoStr,
+                                    // padding: EdgeInsets.all( 0),
+                                    style: themeApp.text12dWhite,
+                                    background: themeApp.colorPrimaryRed,
+                                    onPressed: () {
+                                      removePokemon(_item);
+                                      Get.back();
+                                    },
+                                  )),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 2),
-                  Divider(
-                    color: themeApp.colorGenericBox,
-                  ),
-                  SizedBox(height: 2),
-                  GestureDetector(
-                    onTap: () {
-                      Get.back();
-                      Get.back();
-                      agendaOpenBottomSheetTableStore(_);
-                    },
-                    child: Container(
-                      child: itemPopUp(Constant.ICON_EDIT, editarStr),
-                    ),
-                  ),
-                ],
-              ),
+                Flexible(
+                    child: Button1(
+                  height: 20,
+                  label: cerrarStr,
+                  // padding: EdgeInsets.all( 0),
+                  style: themeApp.text12dWhite,
+                  background: themeApp.colorPrimaryGeen,
+                  onPressed: () {
+                    Get.back();
+                  },
+                ))
+              ],
             ),
-          )),
+          ),
+        ),
+      )),
     );
   }
 
