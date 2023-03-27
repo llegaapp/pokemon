@@ -64,6 +64,7 @@ class PokemonController extends GetxController {
       RefreshController(initialRefresh: false);
   List<RouteSup> itemsRouteSup = [];
   List<PokemonListModel> itemsPokemon = [];
+  List<PokemonListModel> itemsPokemonSelected = [];
 
   late List<CatRoutesBySupervisor> itemsRoutes = [];
   late List<AnaquelerosToManage> itemsAnaqueleros = [];
@@ -167,14 +168,17 @@ class PokemonController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-
     await getCountClientsStates();
-
     //paginator
-
     ever(_paginationFilter, (_) => loadListPokemon());
     _changePaginationFilter(0, _limitPagination);
     //paginator
+  }
+
+  addPokemon(PokemonListModel item) {
+    // itemsPokemonSelected!.add(item);
+    item.selected = true;
+    print(item.id.toString() + ' ' + item.selected.toString());
   }
 
   loadTeamsData() async {
@@ -3270,7 +3274,7 @@ class PokemonController extends GetxController {
 
   /* ------------------------------------------------------------------------------------------------------------------------
   Nombre:      _updateUniqueSelectedTmp
-  Propósito:   Procedimiento que actualiza la selección del anaquelero de la lista 
+  Propósito:   Procedimiento que actualiza la selección del anaquelero de la lista
   Entradas:    idUniqueSelected: Id del anaquelero seleccionado
                nameUniqueSelected: Nombre del anaquelero seleccionado
   Salida:      NA
@@ -4307,9 +4311,9 @@ class PokemonController extends GetxController {
 
 /* ------------------------------------------------------------------------------------------------------------------------
   Nombre:      Activity
-  Propósito:   Clase que implementa el widget de los apartados de asistencia 
+  Propósito:   Clase que implementa el widget de los apartados de asistencia
   Entradas:    type: Indica si es de tipo checkin, comida o checkout
-               onPressed: Función que ejecuta el widget 
+               onPressed: Función que ejecuta el widget
                update: Indica si los valores del widget fueron actualizados
                widgetUpdate: Widget que se va a mostrar en caso de ser actualizado
   Salida:      StatelessWidget

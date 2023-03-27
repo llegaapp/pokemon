@@ -44,24 +44,24 @@ class Button1 extends StatelessWidget {
       }
     } else {
       result = ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: this.background,
-
-          minimumSize: const Size.fromHeight(50), // NEW
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color?>(this.background),
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry?>(this.padding),
+          fixedSize: MaterialStateProperty.all<Size>(const Size(240, 50)),
+          shape:
+              MaterialStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          )),
         ),
-        onPressed: onPressed,
         child: Text(
           this.label ?? '',
           style: this.style,
         ),
+        onPressed: onPressed,
       );
     }
     if (this.padding != null) {
-      result = Container(
-        padding: this.padding,
-        child: result,
-        constraints: BoxConstraints.expand(),
-      );
+      result = Container(padding: this.padding, child: result);
     }
 
     if (tip != null) {

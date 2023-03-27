@@ -21,6 +21,8 @@ class ContentPokemonList extends StatelessWidget {
                     index: index,
                     img: item.img,
                     name: item.name,
+                    onPressed: item.selected == false ? _.addPokemon(item) : null,
+                    selected: item.selected,
                     pokemonTypes: item.detail?.pokemonTypes),
                 SizedBox(
                   height: 10,

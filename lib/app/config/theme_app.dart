@@ -117,6 +117,8 @@ class ThemeApp {
   TextStyle? textHeader;
   TextStyle? text14boldBlack400;
   TextStyle? text12dWhite;
+  TextStyle? text14Black;
+  TextStyle? text12Red;
 
   init() {
     colorsGradient = [Colors.blue, white];
@@ -341,6 +343,10 @@ class ThemeApp {
     );
     text12dWhite = TextStyle(
         color: colorWhite, fontSize: 12, fontFamily: 'Titillium Web Black');
+    text12Red = TextStyle(
+        color: colorPrimaryRed, fontSize: 12, fontFamily: 'Titillium Web Black');
+    text14Black = TextStyle(
+        color: colorBlack, fontSize: 14, fontFamily: 'Titillium Web Black');
   }
 }
 

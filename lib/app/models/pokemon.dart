@@ -5,6 +5,7 @@ class PokemonListModel {
   String? img;
   String? name;
   String? url;
+  bool selected = false;
   PokemonModelDetail? detail;
 
   PokemonListModel({

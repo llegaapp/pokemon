@@ -58,6 +58,7 @@ class Constant {
   static const String ICON_GROUP_GROUPS186 = PATH_IMG + 'Group186.svg';
   static const String ICON_CALENDAR_BLUE = PATH_IMG + 'calendar_blue.svg';
   static const String ICON_POKE_BALL = PATH_IMG + 'poke_ball.png';
+  static const String ICON_PC = PATH_IMG + 'pc.png';
 
   static const String LOGO_DETALLISTA = PATH_IMG + 'detallista.png';
   static const String LOGO_CONSUMIDOR = PATH_IMG + 'consumidor.png';

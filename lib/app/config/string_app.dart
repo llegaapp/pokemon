@@ -184,3 +184,5 @@ String get cargandoInfoStr => 'Cargando pokemones...';
 String get nombreStr => 'Nombre: ';
 String get tipoStr => 'Tipo: ';
 String get agregarAmiEquipoStr => 'Agregar a mi equipo ';
+String get yaEsParteDeTuEquipoStr => 'Ya es parte de tu equipo';
+String get selecciona5PokemonStr => 'Selecciona hasta 5 Pokémons para agregarlos a tu equipo';

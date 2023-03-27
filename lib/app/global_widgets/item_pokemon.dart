@@ -11,18 +11,28 @@ import '../config/utils.dart';
 import '../models/pokemon.dart';
 import 'button1.dart';
 
-class ItemPokemon extends StatelessWidget {
+class ItemPokemon extends StatefulWidget {
   final int? index;
   final String? img;
   final String? name;
+  final VoidCallback? onPressed;
+  final bool? selected;
   final List<PokemonTypesList>? pokemonTypes;
-  const ItemPokemon({
+
+  ItemPokemon({
     this.index,
     this.img,
     this.name,
+    this.onPressed,
+    this.selected,
     this.pokemonTypes,
   });
 
+  @override
+  State<ItemPokemon> createState() => _ItemPokemonState();
+}
+
+class _ItemPokemonState extends State<ItemPokemon> {
   @override
   Widget build(BuildContext context) {
     ResponsiveApp responsiveApp = ResponsiveApp(context);
@@ -62,7 +72,7 @@ class ItemPokemon extends StatelessWidget {
                           color: themeApp.colorWhite,
                           height: 100,
                           width: 100,
-                          child: Image.network(img.toString()),
+                          child: Image.network(widget. img.toString()),
                         ),
                         SizedBox(
                           height: 10,
@@ -83,7 +93,7 @@ class ItemPokemon extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            nombreStr + name!,
+                            nombreStr + widget.name!,
                             style: themeApp.text18boldBlack600,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -96,7 +106,7 @@ class ItemPokemon extends StatelessWidget {
                           ),
                           Row(
                             children: <Widget>[
-                              for (var _itemType in pokemonTypes!)
+                              for (var _itemType in widget.pokemonTypes!)
                                 Padding(
                                     padding: EdgeInsets.only(right: 5, top: 10),
                                     child: Container(
@@ -125,12 +135,17 @@ class ItemPokemon extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: Button1(
-                    label: agregarAmiEquipoStr,
-                    style: themeApp.text12dWhite,
-                    background: themeApp.colorPrimaryRed,
-                    onPressed: () {},
-                  ),
+                  child: widget.selected == false
+                      ? Button1(
+                          label: agregarAmiEquipoStr,
+                          style: themeApp.text12dWhite,
+                          background: themeApp.colorPrimaryRed,
+                          onPressed: (() => widget.onPressed),
+                        )
+                      : Text(
+                          yaEsParteDeTuEquipoStr,
+                          style: themeApp.text12Red,
+                        ),
                 )),
             SizedBox(
               height: 10,
