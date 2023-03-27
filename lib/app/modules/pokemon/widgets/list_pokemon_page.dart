@@ -53,9 +53,8 @@ class ListPokemonPage extends StatelessWidget {
                               controller: _.scrollController,
                               itemCount: _.itemsPokemon.length,
                               itemBuilder: (context, index) {
-                                return ContentPokemonList(_.itemsPokemon[index],
-                                    index );
-                                // return Container();
+                                return ContentPokemonList(
+                                    _.itemsPokemon[index], index);
                               },
                             ),
                           )),

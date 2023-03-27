@@ -2,97 +2,25 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bootstrap/flutter_bootstrap.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:pokemon_heb/app/global_widgets/button2.dart';
 import 'package:pokemon_heb/main.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import '../../config/constant.dart';
-import '../../config/responsive_app.dart';
 import '../../config/string_app.dart';
 import '../../config/utils.dart';
 import '../../data_source/constant_ds.dart';
-import '../../global_widgets/app/view_address_store.dart';
 import '../../global_widgets/button1.dart';
 import '../../models/paginator.dart';
 import '../../models/pokemon.dart';
 import '../../repository/main_repository.dart';
-import 'package:jiffy/jiffy.dart';
-import 'package:path/path.dart';
 
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 
 class PokemonController extends GetxController {
   bool loading = false;
   Dio dio = Dio();
+  late Map<String, dynamic> result;
   List<PokemonListModel> itemsPokemon = [];
   List<PokemonListModel> itemsPokemonSelected = [];
   List<PokemonListModel> itemsPokemonPaginator = [];
-
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  RefreshController refreshControllerSupervisor =
-      RefreshController(initialRefresh: false);
-  RefreshController refreshControllerSupervisorItem =
-      RefreshController(initialRefresh: false);
-  RefreshController refreshControllerSupervisorItemDetail =
-      RefreshController(initialRefresh: false);
-  RefreshController refreshControllerAgendaDetail =
-      RefreshController(initialRefresh: false);
-
-  late int totalItemsStores = 0;
-  String routeStoresSelected = '';
-  bool activeSwitch = false;
-  String hourCheckinSelect = '';
-  String minuteCheckinSelect = '';
-  String hourCheckoutSelect = '';
-  String minuteCheckoutSelect = '';
-  String hourDeSelect = '';
-  String hourASelect = '';
-  File? fileImage;
-  String b64Image = '';
-  String dateb64Image = '';
-  String timeb64Image = '';
-  bool imageUpdate = false;
-  bool anaqueleroUpdate = false;
-  bool checkinUpdate = false;
-  bool checkoutUpdate = false;
-  String idUniqueSelectedTmp = '0';
-  String nameUniqueSelectedTmp = '';
-  bool isDetailUpdate = false;
-  int indexDiaryClientCurrent = -1;
-  int indexRouteSupCurrent = -1;
-  int indexTeamCurrentDetails = -1;
-  int indexTeamAnaquelero = -1;
-  int indexStoreCurrentDetails = -1;
-
-  late int totalItemsFiltredTeams = 0;
-  late int totalItemsTeams = 0;
-  bool isTodayTeams = false;
-  bool isSearchStore = false;
-
-  String routeTeamsSelected = '';
-
-  late Map<String, dynamic> result;
-  String _code = '';
-  String dateCurrentStr = '';
-  int indexPage = 1;
-  String titleStore = tiendasStr;
-  String titleTeams = equiposStr;
-  String currentStoreList = '';
-  String currentTeamList = '';
-  int subIndexPage = 0;
-  bool timeToEat = false;
-  String idRouteAgendaCurrent = '';
-  bool enabledButton = false;
-  bool visibleButton = false;
-  bool _sortAscending = true;
-  int? sortColumnIndex;
-  final searchController = TextEditingController();
-  final searchTeamController = TextEditingController();
-
-  int teamRadioVal = -1;
 
   //paginator
   int totalItemsRouteSupPaginator = 0;
@@ -152,18 +80,16 @@ class PokemonController extends GetxController {
         }
       }
     }
-
     //pagination
     if (itemsPokemonPaginator.isEmpty) {
       _lastPage.value = true;
     }
     //pagination
-
     loading = false;
     Get.back();
     update();
     if (skip! > 0) {
-      scrollController.animateTo((itemsPokemon.length - _limitPagination) * 45,
+      scrollController.animateTo((itemsPokemon.length - _limitPagination) * 100,
           duration: const Duration(microseconds: 100), curve: Curves.linear);
     }
     update();

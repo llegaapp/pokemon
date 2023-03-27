@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart';
 import 'package:pokemon_heb/app/config/constant.dart';
-import 'package:pokemon_heb/app/modules/dashboard/dashboard_controller.dart';
 import 'package:pokemon_heb/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,8 +9,6 @@ import '../pokemon_controller.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => Size.fromHeight(60.0);
-
-  DashboardController dash = Get.put(DashboardController());
 
   @override
   Widget build(BuildContext context) {

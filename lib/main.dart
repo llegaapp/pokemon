@@ -5,11 +5,9 @@ import 'package:get_storage/get_storage.dart';
 import 'app/config/string_app.dart';
 import 'app/config/theme_app.dart';
 import 'app/data_source/api_clients.dart';
-import 'app/data_source/rest_data_source.dart';
 import 'app/modules/pokemon/pokemon_binding.dart';
 import 'app/modules/pokemon/pokemon_page.dart';
 import 'app/repository/main_repository.dart';
-import 'app/routes/app_pages.dart';
 
 ThemeApp themeApp = ThemeApp();
 
@@ -17,11 +15,8 @@ void main() async {
   themeApp.init();
   WidgetsFlutterBinding.ensureInitialized();
 
-
-
   final apiClients = ApiClients();
-  final apiRest = RestDataSource();
-  final mainRepository = MainRepository(apiClients, apiRest);
+  final mainRepository = MainRepository(apiClients);
   Get.put(mainRepository);
   await GetStorage.init();
 
@@ -37,7 +32,6 @@ class AppGestion extends StatelessWidget {
   Widget build(BuildContext context) {
     var _theme = ThemeData(
       fontFamily: 'TitilliumWeb',
-      primarySwatch: themeApp.primarySwatch,
     );
     return GetMaterialApp(
       title: titleAppStr,
@@ -45,7 +39,6 @@ class AppGestion extends StatelessWidget {
       theme: _theme,
       home: PokemonPage(),
       initialBinding: PokemonBinding(),
-      getPages: AppPages.pages,
     );
   }
 }

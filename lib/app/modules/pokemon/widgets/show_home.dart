@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'list_route_page.dart';
+import 'list_pokemon_page.dart';
 import '../pokemon_controller.dart';
 
 class ShowHome extends StatelessWidget {

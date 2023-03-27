@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 class PokemonListModel {
   String? id;
   String? img;

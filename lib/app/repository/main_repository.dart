@@ -1,11 +1,9 @@
 import '../data_source/api_clients.dart';
-import '../data_source/rest_data_source.dart';
 
 class MainRepository {
   final ApiClients _api;
-  final RestDataSource _apiRest;
 
-  MainRepository(this._api, this._apiRest);
+  MainRepository(this._api);
 
   late Map<String, dynamic> result;
   late Map<String, dynamic> datos;

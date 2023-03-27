@@ -1,13 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import '../models/pokemon.dart';
-import '../models/response_code.dart';
-import '../models/validation.dart';
 import 'constant_ds.dart';
 
 class ApiClients {
   Map<String, dynamic> datos = Map<String, dynamic>();
-  late ResponseCode _response;
   late Response response;
 
   Dio dio = Dio();
@@ -18,17 +15,6 @@ class ApiClients {
   String errmsg = "";
 
   get developer => null;
-
-  void setResponse(Map<String, dynamic>? data, String endPoint) {
-    datos.clear();
-    _response = ResponseCode.fromJson(data![endPoint][Cnstds.KEY_RESPONSCODE]);
-    datos.addAll({'response': _response});
-    if (_response.code == Cnstds.KEY_GST00001) {
-      Validation validation = Validation.fromJson(
-          data[endPoint][Cnstds.KEY_RESPONSCODE][Cnstds.KEY_VALIDATIONS][0]);
-      datos.addAll({'validation': validation});
-    }
-  }
 
   Future<Map<String, dynamic>> getAppHomePokemonList(
       int skip, int limit) async {
